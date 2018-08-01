@@ -1,0 +1,136 @@
+package com.wsln.mydemo.ui.widget;
+
+import android.content.Context;
+import android.support.annotation.Nullable;
+import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.view.NestedScrollingChildHelper;
+import android.support.v4.view.ViewCompat;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.widget.ScrollView;
+import android.support.v4.view.NestedScrollingChild2;
+
+/**
+ * auth: liunan
+ * date: 2018/7/27
+ * desc: 子滑动控件
+ */
+public class MyChildScrollView extends ScrollView implements NestedScrollingChild {
+
+    private NestedScrollingChildHelper childHelper;
+    private int[] consumed = new int[2];
+    private int[] offsetInWindow = new int[2];
+    private int downX;
+    private int downY;
+    private VelocityTracker mVelocityTracker = null;
+    private boolean allowFly = false;
+
+    public MyChildScrollView(Context context) {
+        super(context);
+    }
+
+    public MyChildScrollView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        childHelper = new NestedScrollingChildHelper(this);
+        setNestedScrollingEnabled(true);
+    }
+
+    public MyChildScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if(mVelocityTracker == null){
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(ev);
+
+        switch (ev.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                allowFly = false;
+                downX = (int)ev.getRawX();
+                downY = (int)ev.getRawY();
+                startNestedScroll(ViewCompat.SCROLL_AXIS_HORIZONTAL | ViewCompat.SCROLL_AXIS_VERTICAL);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int moveX = (int)ev.getRawX();
+                int moveY = (int)ev.getRawY();
+                int dx = moveX - downX;
+                int dy = -(moveY - downY);//滚动方法的方向跟坐标是相反的，所以这里要加一个负号
+                downX = moveX;
+                downY = moveY;
+                //在consumed中就是父类滑动后剩下的距离，
+                if(dispatchNestedPreScroll(0,dy,consumed,offsetInWindow)){
+                    dy = consumed[1];
+                    MyChildScrollView.this.scrollBy(0, dy);
+                    allowFly = true;
+                }else {
+
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                stopNestedScroll();
+                if(allowFly){
+                    mVelocityTracker.computeCurrentVelocity(1000);//该参数指定的是1S内滑动的像素。也可以指定最大速率。
+                    int myScrollFly = (int)mVelocityTracker.getYVelocity();
+                    fling(-myScrollFly);//惯性滑动的方法
+                }
+                break;
+        }
+        return true;
+    }
+    //~~~~~~~ 嵌套滑动的处理方法 ~~~~~~~
+    @Override
+    public void setNestedScrollingEnabled(boolean enabled) {
+        childHelper.setNestedScrollingEnabled(enabled);
+    }
+
+    @Override
+    public boolean isNestedScrollingEnabled() {
+        return childHelper.isNestedScrollingEnabled();
+
+    }
+
+    @Override
+    public boolean startNestedScroll(int axes) {
+        return childHelper.startNestedScroll(axes);
+    }
+
+    @Override
+    public void stopNestedScroll() {
+        childHelper.stopNestedScroll();
+
+    }
+
+    @Override
+    public boolean hasNestedScrollingParent() {
+        return childHelper.hasNestedScrollingParent();
+    }
+
+    @Override
+    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
+        return childHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow);
+    }
+
+    /**
+     * @param dx       水平滑动距离
+     * @param dy       垂直滑动距离
+     * @param consumed 父类消耗掉的距离
+     * @return
+     */
+    @Override
+    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+        return childHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
+        return childHelper.dispatchNestedFling(velocityX, velocityY, consumed);
+    }
+
+    @Override
+    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
+        return childHelper.dispatchNestedPreFling(velocityX, velocityY);
+    }
+}
