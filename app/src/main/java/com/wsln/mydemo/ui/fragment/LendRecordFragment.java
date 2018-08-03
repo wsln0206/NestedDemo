@@ -2,6 +2,7 @@ package com.wsln.mydemo.ui.fragment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,9 +24,11 @@ import com.wsln.mydemo.base.BaseFragment;
 import com.wsln.mydemo.base.LazyFragment;
 import com.wsln.mydemo.ui.adapter.LendRecordAdapter;
 import com.wsln.mydemo.ui.adapter.LendRecordRvAdapter;
+import com.wsln.mydemo.ui.adapter.LendRecordRvMoreAdapter;
 import com.wsln.mydemo.ui.widget.CustomListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,9 +45,11 @@ public class LendRecordFragment extends BaseFragment {
 
     private SmartRefreshLayout refresh;
 
+    private List<String> data;
     private List<String> list;
     private LendRecordAdapter adapter;
     private LendRecordRvAdapter adapter1;
+    private LendRecordRvMoreAdapter adapter2;
 
     public LendRecordFragment() {
         // Required empty public constructor
@@ -94,6 +99,10 @@ public class LendRecordFragment extends BaseFragment {
         for (int i=0;i<40;i++){
             list.add("数据-------"+i);
         }
+        data = new ArrayList<>();
+        for (int i=0;i<40;i++){
+            data.add("更新的数据--"+i);
+        }
 
 
         //adapter = new LendRecordAdapter(list,getActivity());
@@ -113,16 +122,9 @@ public class LendRecordFragment extends BaseFragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvContainer.setLayoutManager(layoutManager);
-        adapter1 = new LendRecordRvAdapter(getActivity(),list);
-        rvContainer.setAdapter(adapter1);
-        adapter1.setOnClickListener(new LendRecordRvAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick() {
-                list.clear();
-                adapter1.notifyDataSetChanged();
-            }
-        });
-
+        //adapter1 = new LendRecordRvAdapter(getActivity(),list);
+        adapter2 = new LendRecordRvMoreAdapter(getActivity(), list);
+        rvContainer.setAdapter(adapter2);
     }
 
     private void initView(View view) {
@@ -144,6 +146,32 @@ public class LendRecordFragment extends BaseFragment {
 //                refreshLayout.finishLoadMore(1500);
 //            }
 //        });
+
+//        adapter1.setOnClickListener(new LendRecordRvAdapter.onItemClickListener() {
+//            @Override
+//            public void onItemClick() {
+//                list.clear();
+//                adapter1.notifyDataSetChanged();
+//            }
+//        });
+        adapter2.setOnClickListener(new LendRecordRvMoreAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v) {
+                adapter2.clearData();
+            }
+        });
+        adapter2.setOnLoadMoreListener(new LendRecordRvMoreAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter2.appendData(data);
+                    }
+                },1500);
+
+            }
+        });
     }
 
 }

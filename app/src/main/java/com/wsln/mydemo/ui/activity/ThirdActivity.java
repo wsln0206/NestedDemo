@@ -144,7 +144,7 @@ public class ThirdActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 if (position == 2){
-                    refresh.setEnableLoadMore(true);
+                    refresh.setEnableLoadMore(false);
                 }else {
                     refresh.setEnableLoadMore(false);
                 }
