@@ -11,13 +11,14 @@ import android.view.ViewGroup;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.wsln.mydemo.R;
+import com.wsln.mydemo.base.BaseFragment;
 import com.wsln.mydemo.base.LazyFragment;
 import com.wsln.mydemo.ui.widget.CustomViewPager;
 
 /**
  * 借款信息
  */
-public class LoanInfoFragment extends LazyFragment {
+public class LoanInfoFragment extends BaseFragment {
     private ViewPager mViewPager;
     private int position;
     private SmartRefreshLayout refresh;
@@ -45,32 +46,19 @@ public class LoanInfoFragment extends LazyFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //mViewPager = (ViewPager)getActivity().findViewById(R.id.vp_container);
-       // refresh = (SmartRefreshLayout) getActivity().findViewById(R.id.refresh);
+        refresh = (SmartRefreshLayout) getActivity().findViewById(R.id.refresh);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_loan_info, container, false);
+        //mViewPager.setObjectForPosition(view,position);
+        return view;
     }
 
 //    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_loan_info, container, false);
-//        //mViewPager.setObjectForPosition(view,position);
-//        return view;
+//    public void lazyData() {
+//        refresh.setEnableLoadMore(false);
 //    }
-
-    @Override
-    protected int getLayoutResource() {
-        return R.layout.fragment_loan_info;
-    }
-
-    @Override
-    protected void initView() {
-        refresh = getActivity().findViewById(R.id.refresh);
-        refresh.setEnableLoadMore(false);
-    }
-
-    @Override
-    protected void onFragmentVisibleChange(boolean isVisible) {
-        if (isVisible){
-            refresh.setEnableLoadMore(false);
-        }
-    }
 }

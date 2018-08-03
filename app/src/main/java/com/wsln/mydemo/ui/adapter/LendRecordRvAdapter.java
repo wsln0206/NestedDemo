@@ -25,12 +25,10 @@ public class LendRecordRvAdapter extends RecyclerView.Adapter {
     private List<String> list;
 
     private final int EMPTY_VIEW = 0;
-    private final int NORMAL_VIEW = 1;
+    private final int ITEM_VIEW = 1;
     private final int FOOT_VIEW = 2;
 
     private onItemClickListener listener;
-
-    private RecyclerView.Adapter mAdapter; //需要装饰的Adapter
 
     public LendRecordRvAdapter(Context context, List<String> list) {
         this.context = context;
@@ -43,7 +41,7 @@ public class LendRecordRvAdapter extends RecyclerView.Adapter {
         if (viewType == EMPTY_VIEW){
             View view = LayoutInflater.from(context).inflate(R.layout.empty_view, viewGroup, false);
             return new EmptyViewHolder(view);
-        }else if (viewType == NORMAL_VIEW){
+        }else if (viewType == ITEM_VIEW){
             View view = LayoutInflater.from(context).inflate(R.layout.item_lend_record, viewGroup, false);
             return new MyViewHolder(view);
         }else {
@@ -78,8 +76,9 @@ public class LendRecordRvAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
+
         if (list != null && list.size() > 0){
-            return NORMAL_VIEW;
+            return ITEM_VIEW;
         }
         return EMPTY_VIEW;
     }

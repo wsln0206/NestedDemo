@@ -19,6 +19,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.wsln.mydemo.R;
+import com.wsln.mydemo.base.BaseFragment;
 import com.wsln.mydemo.base.LazyFragment;
 import com.wsln.mydemo.ui.adapter.LendRecordAdapter;
 import com.wsln.mydemo.ui.adapter.LendRecordRvAdapter;
@@ -32,7 +33,7 @@ import java.util.List;
  * date: 2018/7/26
  * desc: 借款记录
  */
-public class LendRecordFragment extends LazyFragment {
+public class LendRecordFragment extends BaseFragment {
     private ViewPager mViewPager;
     private int position;
     //private ListView mLvContainer;
@@ -69,17 +70,22 @@ public class LendRecordFragment extends LazyFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //mViewPager = (ViewPager)getActivity().findViewById(R.id.vp_container);
-        //refresh = (SmartRefreshLayout) getActivity().findViewById(R.id.refresh);
+        refresh = (SmartRefreshLayout) getActivity().findViewById(R.id.refresh);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_lend_record, container, false);
+        initView(view);
+        //mViewPager.setObjectForPosition(view,position);
+        initData();
+        return view;
     }
 
 //    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_lend_record, container, false);
-//        initView(view);
-//        //mViewPager.setObjectForPosition(view,position);
-//        initData();
-//        return view;
+//    public void lazyData() {
+//        refresh.setEnableLoadMore(true);
 //    }
 
 
@@ -140,23 +146,4 @@ public class LendRecordFragment extends LazyFragment {
 //        });
     }
 
-    @Override
-    protected int getLayoutResource() {
-        return R.layout.fragment_lend_record;
-    }
-
-    @Override
-    protected void initView() {
-        initView(rootView);
-        refresh = getActivity().findViewById(R.id.refresh);
-        refresh.setEnableLoadMore(true);
-        initData();
-    }
-
-    @Override
-    protected void onFragmentVisibleChange(boolean isVisible) {
-        if (isVisible){
-            refresh.setEnableLoadMore(true);
-        }
-    }
 }

@@ -13,13 +13,14 @@ import android.view.ViewGroup;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.wsln.mydemo.R;
+import com.wsln.mydemo.base.BaseFragment;
 import com.wsln.mydemo.base.LazyFragment;
 import com.wsln.mydemo.ui.widget.CustomScrollView;
 
 /**
  * 标的详情
  */
-public class MarkDetailsFragment extends LazyFragment {
+public class MarkDetailsFragment extends BaseFragment {
 
     private ViewPager mViewPager;
     private int position;
@@ -56,16 +57,21 @@ public class MarkDetailsFragment extends LazyFragment {
         mViewPager = (ViewPager)getActivity().findViewById(R.id.vp_container);
         Toolbar toolbar = getActivity().findViewById(R.id.tb_titile);
         //toolbarHeight = toolbar.getHeight();
+        refresh = getActivity().findViewById(R.id.refresh);
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_mark_details, container, false);
+        initView(view);
+//        mViewPager.setObjectForPosition(view,position);
+        return view;
     }
 
 //    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_mark_details, container, false);
-//        initView(view);
-////        mViewPager.setObjectForPosition(view,position);
-//        return view;
+//    public void lazyData() {
+//        refresh.setEnableLoadMore(false);
 //    }
 
     @Override
@@ -97,21 +103,5 @@ public class MarkDetailsFragment extends LazyFragment {
         //scrollView = (CustomScrollView) view.findViewById(R.id.scroll_view);
     }
 
-    @Override
-    protected int getLayoutResource() {
-        return R.layout.fragment_mark_details;
-    }
 
-    @Override
-    protected void initView() {
-        refresh = getActivity().findViewById(R.id.refresh);
-        refresh.setEnableLoadMore(false);
-    }
-
-    @Override
-    protected void onFragmentVisibleChange(boolean isVisible) {
-        if (isVisible){
-            refresh.setEnableLoadMore(false);
-        }
-    }
 }

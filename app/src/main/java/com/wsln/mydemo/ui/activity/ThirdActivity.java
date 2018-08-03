@@ -109,7 +109,7 @@ public class ThirdActivity extends AppCompatActivity {
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager(), fragments, tabTitles);
         vpContainer.setAdapter(adapter);
         tab.setupWithViewPager(vpContainer);
-
+        refresh.setEnableLoadMore(false);
     }
 
     private void initListener() {
@@ -134,6 +134,27 @@ public class ThirdActivity extends AppCompatActivity {
 //                }).run();
 //            }
 //        });
+
+        vpContainer.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 2){
+                    refresh.setEnableLoadMore(true);
+                }else {
+                    refresh.setEnableLoadMore(false);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         refresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
